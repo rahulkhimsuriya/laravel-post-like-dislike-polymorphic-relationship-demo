@@ -1,0 +1,14 @@
+<?php
+
+/** @var \Illuminate\Database\Eloquent\Factory $factory */
+
+use App\Post;
+use Faker\Generator as Faker;
+
+$factory->define(Post::class, function (Faker $faker) {
+    return [
+        "owner_id" => factory("App\User"),
+        'title' => $faker->sentence(4),
+        'body' => $faker->paragraph,
+    ];
+});
