@@ -24,7 +24,11 @@ class HomeController extends Controller
      */
     public function index()
     {
-         $posts = Post::all();
+        $posts = Post::all();
+
+        if (request()->wantsJson()) {
+            return $posts;
+        }
         
         return view('posts.index', compact('posts'));
     }
