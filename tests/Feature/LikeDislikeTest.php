@@ -15,8 +15,8 @@ class LikeDislikeTest extends TestCase
     {
         $post = factory('App\Post')->create();
 
-        $this->post('/posts/'.$post->id.'/like')->assertRedirect('/login');
-        $this->post('/posts/'.$post->id.'/dislike')->assertRedirect('/login');
+        $this->post('/posts/' . $post->id . '/like')->assertRedirect('/login');
+        $this->post('/posts/' . $post->id . '/dislike')->assertRedirect('/login');
     }
 
     /** @test */
@@ -28,9 +28,9 @@ class LikeDislikeTest extends TestCase
 
         $post = factory('App\Post')->create();
 
-        $this->actingAs($user)->post('/posts/'. $post->id . '/like');
+        $this->actingAs($user)->post('/posts/' . $post->id . '/like');
 
-        $this->assertCount(1, $post->likes);
+        $this->assertEquals(1, $post->fresh()->likesCount);
     }
 
     /** @test */
@@ -42,11 +42,11 @@ class LikeDislikeTest extends TestCase
 
         $post = factory('App\Post')->create();
 
-        $this->actingAs($user)->post('/posts/'. $post->id . '/like');
-        $this->assertCount(1, $post->likes);
+        $this->actingAs($user)->post('/posts/' . $post->id . '/like');
+        $this->assertEquals(1, $post->likesCount);
 
-        $this->actingAs($user)->post('/posts/'. $post->id . '/like');
-        $this->assertCount(0, $post->fresh()->likes);
+        $this->actingAs($user)->post('/posts/' . $post->id . '/like');
+        $this->assertEquals(0, $post->fresh()->likesCount);
     }
 
     /** @test */
@@ -58,9 +58,9 @@ class LikeDislikeTest extends TestCase
 
         $post = factory('App\Post')->create();
 
-        $this->actingAs($user)->post('/posts/'. $post->id . '/dislike');
+        $this->actingAs($user)->post('/posts/' . $post->id . '/dislike');
 
-        $this->assertCount(1, $post->likes);
+        $this->assertEquals(1, $post->dislikesCount);
     }
 
     /** @test */
@@ -72,11 +72,11 @@ class LikeDislikeTest extends TestCase
 
         $post = factory('App\Post')->create();
 
-        $this->actingAs($user)->post('/posts/'. $post->id . '/dislike');
-        $this->assertCount(1, $post->likes);
+        $this->actingAs($user)->post('/posts/' . $post->id . '/dislike');
+        $this->assertEquals(1, $post->dislikesCount);
 
-        $this->actingAs($user)->post('/posts/'. $post->id . '/dislike');
-        $this->assertCount(0, $post->fresh()->likes);
+        $this->actingAs($user)->post('/posts/' . $post->id . '/dislike');
+        $this->assertEquals(0, $post->fresh()->dislikesCount);
     }
 
     /** @test */
@@ -90,7 +90,7 @@ class LikeDislikeTest extends TestCase
 
         $this->assertCount(0, $post->likes);
 
-        $this->actingAs($user)->post('/posts/'. $post->id . '/like');
+        $this->actingAs($user)->post('/posts/' . $post->id . '/like');
         $this->assertCount(1, $post->fresh()->likes);
         $this->assertDatabaseHas('likes', [
             'user_id' => $user->id,
@@ -99,7 +99,7 @@ class LikeDislikeTest extends TestCase
             'like' => 1
         ]);
 
-        $this->actingAs($user)->post('/posts/'. $post->id . '/dislike');
+        $this->actingAs($user)->post('/posts/' . $post->id . '/dislike');
         $this->assertCount(1, $post->fresh()->likes);
         $this->assertDatabaseHas('likes', [
             'user_id' => $user->id,
